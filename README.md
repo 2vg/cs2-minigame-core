@@ -1,14 +1,24 @@
-# Lupercalia MG server core plugin
+# Cs2 Minigame server core plugin
 
-CounterStrikeSharp plugin for Lupercalia MG Server(Soon™)
+CounterStrikeSharp plugin for Minigame Server.
+
+Based on [faketuna/lupercalia-mg-cs2](https://github.com/faketuna/lupercalia-mg-cs2), with some improvements.
+
+## What's changed from original
+
+* Name was changed `LupercaliaMGCore` to `CS2MinigameCore`
+  * This is a rename as a plug-in OSS for mini-game servers, not for a specific server.
+  * **I have not forgotten my respect for the original creator, faketuna.**
+  * Please note that the config path, cvar name, etc. have also changed.
+* Rocket feature was added.
+  * use `!rocket`, then u can fly!
 
 # Features
-
 
 - [ ] General
   - [x] DuckFix
   - [x] Map config
-  - [ ] Rocket
+  - [x] Rocket
   - [ ] Easy spectate (May not be implemented) 
   - [x] Vote map restart
   - [x] Vote round restart
@@ -40,25 +50,25 @@ This feature removes duck cooldown when spamming `+duck` button.
 
 #### Usage
 
-Put `***.cfg` to `csgo/cfg/lupercalia/map/` folder
+Put `***.cfg` to `csgo/cfg/cs2minigame/map/` folder
 
 This map config folder will automatically created when not exists.
 
 #### ConVar
 
-In default `lp_mg_mapcfg_type` is 0, which means disabled.
+In default `mg_mapcfg_type` is 0, which means disabled.
 
-If you want to use exact mach i.e. `de_dust2.cfg` set `lp_mg_mapcfg_type` to 1
+If you want to use exact mach i.e. `de_dust2.cfg` set `mg_mapcfg_type` to 1
 
-Or you want to use partial match i.e. `dust.cfg` set `lp_mg_mapcfg_type` to 2
+Or you want to use partial match i.e. `dust.cfg` set `mg_mapcfg_type` to 2
 
 ---
 
-In default `lp_mg_mapcfg_execution_timing` is 1 which means Execute on map start only.
+In default `mg_mapcfg_execution_timing` is 1 which means Execute on map start only.
 
-If you want to execute at only round start set `lp_mg_mapcfg_execution_timing` to 2
+If you want to execute at only round start set `mg_mapcfg_execution_timing` to 2
 
-Or you want to execute at both set `lp_mg_mapcfg_execution_timing` to 3
+Or you want to execute at both set `mg_mapcfg_execution_timing` to 3
 
 
 ### Rocket
@@ -66,16 +76,6 @@ Or you want to execute at both set `lp_mg_mapcfg_execution_timing` to 3
 Probability based vertical launching system. And high chance(default) to die due to rocket accident.
 
 Same feature as [Rocket](https://github.com/faketuna/sm-csgo-rocket)
-
-### Easy spectate
-
-~~Will be implemented after Trace Ray feature implemented in CounterStrikeSharp.~~ I found a way to get the player looking entity.
-
-But another problem found. the `spec_player` command is not works as like CS:GO. it means player is actually spec a player when use `spec_player` command but player not spectate the target's POV when a freelook state.
-
-Spectate aimed player when player is spectating/died and pressing `+use`
-
-Same feature as [sm-CSGO-easyspectate](https://github.com/faketuna/sm-CSGO-easyspectate). 
 
 ### Vote map restart
 
@@ -156,4 +156,4 @@ Probability based event system. When player type `!omikuji` in chat something go
 
 # ConVars / Config
 
-See generated configs in `csgo/cfg/lupercalia/` or [PluginSettings.cs](LupercaliaMGCore/PluginSettings.cs)
+See generated configs in `csgo/cfg/cs2minigame/` or [PluginSettings.cs](CS2MinigameCore/PluginSettings.cs)

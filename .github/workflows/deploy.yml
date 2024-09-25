@@ -51,18 +51,18 @@ jobs:
     - name: Create release artifacts
       run: |
         mkdir artifacts
-        Copy-Item -Path "LupercaliaMGCore\bin\Release\*\LupercaliaMGCore.dll" -Destination "artifacts\LupercaliaMGCore.dll" -Force
+        Copy-Item -Path "CS2MinigameCore\bin\Release\*\CS2MinigameCore.dll" -Destination "artifacts\CS2MinigameCore.dll" -Force
         Copy-Item -Path "lang\" -Destination "artifacts\lang\" -Recurse -Force
 
     - name: Compress artifacts
       run:
-        Compress-Archive -Path artifacts/* -Destination LupercaliaMGCore.zip
+        Compress-Archive -Path artifacts/* -Destination CS2MinigameCore.zip
 
     - name: Upload release assets
       uses: actions/upload-artifact@v3
       with:
         name: release-artifacts
-        path: LupercaliaMGCore.zip
+        path: CS2MinigameCore.zip
 
   release:
     runs-on: windows-latest
@@ -99,6 +99,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: artifacts/LupercaliaMGCore.zip
-        asset_name: LupercaliaMGCore.zip
+        asset_path: artifacts/CS2MinigameCore.zip
+        asset_name: CS2MinigameCore.zip
         asset_content_type: application/zip
