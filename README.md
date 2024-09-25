@@ -12,6 +12,7 @@ Based on [faketuna/lupercalia-mg-cs2](https://github.com/faketuna/lupercalia-mg-
   * Please note that the config path, cvar name, etc. have also changed.
 * Rocket feature was added.
   * use `!rocket`, then u can fly!
+* Implemented dirty hack, for `sv_cheats` cvar.
 
 # Features
 
