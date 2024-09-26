@@ -1,6 +1,3 @@
-using CounterStrikeSharp.API;
-using CounterStrikeSharp.API.Core;
-
 namespace CS2MinigameCore
 {
     public enum OmikujiType

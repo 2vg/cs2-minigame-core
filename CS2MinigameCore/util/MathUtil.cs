@@ -1,5 +1,3 @@
-using CounterStrikeSharp.API;
-
 namespace CS2MinigameCore
 {
     public static class MathUtil

@@ -1,19 +1,22 @@
 namespace CS2MinigameCore
 {
-    public static partial class OmikujiEvents {
+    public static partial class OmikujiEvents
+    {
         public static Random random = new Random();
 
-        public static Dictionary<OmikujiType, List<OmikujiEvent>> getEvents() {
-            if(!isEventsInitialized)
+        public static Dictionary<OmikujiType, List<OmikujiEvent>> getEvents()
+        {
+            if (!isEventsInitialized)
                 throw new InvalidOperationException("Omikuji Events list are not initialized yet.");
-            
+
             return events;
         }
 
         private static bool isEventsInitialized = false;
         private static Dictionary<OmikujiType, List<OmikujiEvent>> events = new Dictionary<OmikujiType, List<OmikujiEvent>>();
 
-        public static void initializeOmikujiEvents() {
+        public static void initializeOmikujiEvents()
+        {
             events[OmikujiType.EVENT_BAD] = new List<OmikujiEvent>();
             events[OmikujiType.EVENT_LUCKY] = new List<OmikujiEvent>();
             events[OmikujiType.EVENT_MISC] = new List<OmikujiEvent>();
@@ -40,8 +43,10 @@ namespace CS2MinigameCore
             miscEvents.Add(new PlayerWishingEvent());
             miscEvents.Add(new ScreenShakeEvent());
 
-            foreach(var evt in events) {
-                foreach(var e in evt.Value) {
+            foreach (var evt in events)
+            {
+                foreach (var e in evt.Value)
+                {
                     e.initialize();
                 }
             }

@@ -3,8 +3,10 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Utils;
 
-namespace CS2MinigameCore {
-    public class Omikuji {
+namespace CS2MinigameCore
+{
+    public class Omikuji
+    {
         private CS2MinigameCore m_CSSPlugin;
         public static readonly string CHAT_PREFIX = $" {ChatColors.Gold}[Omikuji]{ChatColors.Default}";
 
@@ -15,7 +17,8 @@ namespace CS2MinigameCore {
         private Dictionary<CCSPlayerController, double> lastCommandUseTime = new Dictionary<CCSPlayerController, double>();
         private Dictionary<CCSPlayerController, bool> isWaitingForEventExecution = new Dictionary<CCSPlayerController, bool>();
 
-        public Omikuji(CS2MinigameCore plugin) {
+        public Omikuji(CS2MinigameCore plugin)
+        {
             m_CSSPlugin = plugin;
 
             m_CSSPlugin.AddCommand("css_omikuji", "draw a fortune.", CommandOmikuji);
@@ -26,12 +29,14 @@ namespace CS2MinigameCore {
             omikujiTypes.Add((OmikujiType.EVENT_MISC, PluginSettings.getInstance.m_CVOmikujiEventWeightMisc.Value));
 
             // For hot reload
-            m_CSSPlugin.AddTimer(0.1F, () => {
+            m_CSSPlugin.AddTimer(0.1F, () =>
+            {
                 SimpleLogging.LogDebug("Late initialization for hot reloading omikuji.");
-                foreach(CCSPlayerController client in Utilities.GetPlayers()) {
-                    if(!client.IsValid || client.IsBot || client.IsHLTV)
+                foreach (CCSPlayerController client in Utilities.GetPlayers())
+                {
+                    if (!client.IsValid || client.IsBot || client.IsHLTV)
                         continue;
-                    
+
                     lastCommandUseTime[client] = 0.0D;
                     resetPlayerInformation(client);
                 }
@@ -40,32 +45,37 @@ namespace CS2MinigameCore {
             OmikujiEvents.initializeOmikujiEvents();
         }
 
-        private HookResult OnPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info) {
+        private HookResult OnPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
+        {
             CCSPlayerController? client = @event.Userid;
 
-            if(client == null)
+            if (client == null)
                 return HookResult.Continue;
 
             resetPlayerInformation(client);
             return HookResult.Continue;
         }
 
-        private void resetPlayerInformation(CCSPlayerController client) {
+        private void resetPlayerInformation(CCSPlayerController client)
+        {
             SimpleLogging.LogDebug("Omikuji: Resetting player information");
             lastCommandUseTime[client] = 0.0D;
             isWaitingForEventExecution[client] = false;
         }
 
-        private void CommandOmikuji(CCSPlayerController? client, CommandInfo info) {
-            if(client == null)
+        private void CommandOmikuji(CCSPlayerController? client, CommandInfo info)
+        {
+            if (client == null)
                 return;
-            
-            if(isWaitingForEventExecution[client]) {
+
+            if (isWaitingForEventExecution[client])
+            {
                 client.PrintToChat($"{CHAT_PREFIX} {CS2MinigameCore.getInstance().Localizer["Omikuji.Command.Notification.NotReady"]}");
                 return;
             }
 
-            if(Server.EngineTime - lastCommandUseTime[client] < PluginSettings.getInstance.m_CVOmikujiCommandCooldown.Value) {
+            if (Server.EngineTime - lastCommandUseTime[client] < PluginSettings.getInstance.m_CVOmikujiCommandCooldown.Value)
+            {
                 client.PrintToChat($"{CHAT_PREFIX} {CS2MinigameCore.getInstance().Localizer["Omikuji.Command.Notification.Cooldown", (PluginSettings.getInstance.m_CVOmikujiCommandCooldown.Value - (Server.EngineTime - lastCommandUseTime[client])).ToString("#.#")]}");
                 return;
             }
@@ -77,25 +87,30 @@ namespace CS2MinigameCore {
             bool isPlayerAlive = client.PlayerPawn.Value != null && client.PlayerPawn.Value.LifeState == (byte)LifeState_t.LIFE_ALIVE;
 
             OmikujiEvent omikuji;
-            
+
             SimpleLogging.LogTrace($"[Omikuji] [Player {client.PlayerName}] Picking random omikuji.");
-            while(true) {
+            while (true)
+            {
                 omikuji = selectWeightedRandom(events);
 
-                if(omikuji.omikujiCanInvokeWhen == OmikujiCanInvokeWhen.ANYTIME) {
+                if (omikuji.omikujiCanInvokeWhen == OmikujiCanInvokeWhen.ANYTIME)
+                {
                     break;
                 }
-                else if (omikuji.omikujiCanInvokeWhen == OmikujiCanInvokeWhen.PLAYER_DIED && !isPlayerAlive) {
+                else if (omikuji.omikujiCanInvokeWhen == OmikujiCanInvokeWhen.PLAYER_DIED && !isPlayerAlive)
+                {
                     break;
                 }
-                else if (omikuji.omikujiCanInvokeWhen == OmikujiCanInvokeWhen.PLAYER_ALIVE && isPlayerAlive) {
+                else if (omikuji.omikujiCanInvokeWhen == OmikujiCanInvokeWhen.PLAYER_ALIVE && isPlayerAlive)
+                {
                     break;
                 }
             }
 
             isWaitingForEventExecution[client] = true;
             Server.PrintToChatAll($"{CHAT_PREFIX} {CS2MinigameCore.getInstance().Localizer["Omikuji.Command.Notification.Drawing", client.PlayerName]}");
-            m_CSSPlugin.AddTimer(random.Next(PluginSettings.getInstance.m_CVOmikujiCommandExecutionDelayMin.Value, PluginSettings.getInstance.m_CVOmikujiCommandExecutionDelayMax.Value), () => {
+            m_CSSPlugin.AddTimer(random.Next(PluginSettings.getInstance.m_CVOmikujiCommandExecutionDelayMin.Value, PluginSettings.getInstance.m_CVOmikujiCommandExecutionDelayMax.Value), () =>
+            {
                 SimpleLogging.LogTrace($"[Omikuji] [Player {client.PlayerName}] Executing omikuji...");
                 lastCommandUseTime[client] = Server.EngineTime;
                 isWaitingForEventExecution[client] = false;
@@ -103,21 +118,26 @@ namespace CS2MinigameCore {
             });
         }
 
-        private OmikujiType getRandomOmikujiType() {
+        private OmikujiType getRandomOmikujiType()
+        {
             return selectWeightedRandom(omikujiTypes);
         }
 
 
-        private static T selectWeightedRandom<T>(List<(T item, double weight)> weightedItems) {
+        private static T selectWeightedRandom<T>(List<(T item, double weight)> weightedItems)
+        {
             double totalWeight = 0.0D;
-            foreach(var item in weightedItems) {
+            foreach (var item in weightedItems)
+            {
                 totalWeight += item.weight;
             }
 
             double randomVal = random.NextDouble() * totalWeight;
 
-            foreach(var item in weightedItems) {
-                if(randomVal < item.weight) {
+            foreach (var item in weightedItems)
+            {
+                if (randomVal < item.weight)
+                {
                     return item.item;
                 }
 
@@ -127,16 +147,20 @@ namespace CS2MinigameCore {
             return weightedItems[0].item;
         }
 
-        private static OmikujiEvent selectWeightedRandom(List<OmikujiEvent> weightedItems) {
+        private static OmikujiEvent selectWeightedRandom(List<OmikujiEvent> weightedItems)
+        {
             double totalWeight = 0.0D;
-            foreach(var item in weightedItems) {
+            foreach (var item in weightedItems)
+            {
                 totalWeight += item.getOmikujiWeight();
             }
 
             double randomVal = random.NextDouble() * totalWeight;
 
-            foreach(var item in weightedItems) {
-                if(randomVal < item.getOmikujiWeight()) {
+            foreach (var item in weightedItems)
+            {
+                if (randomVal < item.getOmikujiWeight())
+                {
                     return item;
                 }
 
@@ -146,22 +170,27 @@ namespace CS2MinigameCore {
             return weightedItems[0];
         }
 
-        public static string GetOmikujiLuckMessage(OmikujiType type, CCSPlayerController client) {
+        public static string GetOmikujiLuckMessage(OmikujiType type, CCSPlayerController client)
+        {
             string text = "";
-            
-            switch(type) {
-                case OmikujiType.EVENT_BAD: {
-                    text = $"{CS2MinigameCore.getInstance().Localizer["Omikuji.Events.Notification.BadLuck", client.PlayerName]}";
-                    break;
-                }
-                case OmikujiType.EVENT_LUCKY: {
-                    text = $"{CS2MinigameCore.getInstance().Localizer["Omikuji.Events.Notification.Luck", client.PlayerName]}";
-                    break;
-                }
-                case OmikujiType.EVENT_MISC: {
-                    text = $"{CS2MinigameCore.getInstance().Localizer["Omikuji.Events.Notification.Misc", client.PlayerName]}";
-                    break;
-                }
+
+            switch (type)
+            {
+                case OmikujiType.EVENT_BAD:
+                    {
+                        text = $"{CS2MinigameCore.getInstance().Localizer["Omikuji.Events.Notification.BadLuck", client.PlayerName]}";
+                        break;
+                    }
+                case OmikujiType.EVENT_LUCKY:
+                    {
+                        text = $"{CS2MinigameCore.getInstance().Localizer["Omikuji.Events.Notification.Luck", client.PlayerName]}";
+                        break;
+                    }
+                case OmikujiType.EVENT_MISC:
+                    {
+                        text = $"{CS2MinigameCore.getInstance().Localizer["Omikuji.Events.Notification.Misc", client.PlayerName]}";
+                        break;
+                    }
             }
             return text;
         }

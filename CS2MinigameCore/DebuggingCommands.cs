@@ -1,9 +1,5 @@
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
-using CounterStrikeSharp.API.Modules.Timers;
-using CounterStrikeSharp.API.Modules.Utils;
-using CounterStrikeSharp.API.Modules.Admin;
 using Vector = CounterStrikeSharp.API.Modules.Utils.Vector;
 
 namespace CS2MinigameCore

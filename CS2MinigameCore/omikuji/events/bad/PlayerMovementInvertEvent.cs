@@ -4,15 +4,18 @@ using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 
 namespace CS2MinigameCore
 {
-    public static partial class OmikujiEvents {
-        
+    public static partial class OmikujiEvents
+    {
+
         private static float STATIC_PLACE_HOLDER = 5.0F;
-        
+
         // [OmikujiFunc("Player movement invert event", OmikujiType.EVENT_BAD, OmikujiCanInvokeWhen.PLAYER_ALIVE)]
-        public static void playerMovementInvertEvent(CCSPlayerController client) {
+        public static void playerMovementInvertEvent(CCSPlayerController client)
+        {
             isPlayerMovementInverted[client] = true;
 
-            CS2MinigameCore.getInstance().AddTimer(STATIC_PLACE_HOLDER, () => {
+            CS2MinigameCore.getInstance().AddTimer(STATIC_PLACE_HOLDER, () =>
+            {
                 isPlayerMovementInverted[client] = false;
             });
 
@@ -23,15 +26,18 @@ namespace CS2MinigameCore
         private static Dictionary<CCSPlayerController, bool> isPlayerMovementInverted = new Dictionary<CCSPlayerController, bool>();
 
         // [OmikujiInitilizerFunc]
-        private static void initPlayerMovementInvertEventListeners() {
+        private static void initPlayerMovementInvertEventListeners()
+        {
             var plugin = CS2MinigameCore.getInstance();
 
             SimpleLogging.LogDebug("Player Movement Invert Event initializer called");
-            plugin.RegisterListener<Listeners.OnMapStart>(mapName => {
-                foreach(CCSPlayerController cl in Utilities.GetPlayers()) {
-                    if(!cl.IsValid || cl.IsBot || cl.IsHLTV)
+            plugin.RegisterListener<Listeners.OnMapStart>(mapName =>
+            {
+                foreach (CCSPlayerController cl in Utilities.GetPlayers())
+                {
+                    if (!cl.IsValid || cl.IsBot || cl.IsHLTV)
                         continue;
-                    
+
                     isPlayerMovementInverted[cl] = false;
                 }
             });
@@ -45,25 +51,27 @@ namespace CS2MinigameCore
 
             SimpleLogging.LogDebug("Initialize PlayerConnect Event Handler");
 
-            plugin.RegisterEventHandler<EventPlayerConnect>((@event, info) => {
+            plugin.RegisterEventHandler<EventPlayerConnect>((@event, info) =>
+            {
                 CCSPlayerController? client = @event.Userid;
-                if(client == null)
+                if (client == null)
                     return HookResult.Continue;
 
                 isPlayerMovementInverted[client] = false;
 
                 return HookResult.Continue;
             }, HookMode.Post);
-            
+
             SimpleLogging.LogDebug("Player Movement Invert Event initialized");
         }
 
-        private static HookResult onRunCmd(DynamicHook hook) {
+        private static HookResult onRunCmd(DynamicHook hook)
+        {
             CCSPlayerController? client = hook.GetParam<CCSPlayer_MovementServices>(0).Pawn.Value.Controller.Value?.As<CCSPlayerController>();
 
-            if(client == null || !client.IsValid || client.IsBot || client.IsHLTV)
+            if (client == null || !client.IsValid || client.IsBot || client.IsHLTV)
                 return HookResult.Continue;
-            
+
             // TODO obtain buttons from hook
 
             return HookResult.Continue;

@@ -1,9 +1,4 @@
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Attributes.Registration;
-using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 
 namespace CS2MinigameCore;
@@ -37,11 +32,11 @@ public static class EmitSoundExtension
     /// Emit a sound event by name (e.g., "Weapon_AK47.Single").
     /// TODO: parameters passed in here only seem to work for sound events shipped with the game, not workshop ones.
     /// </summary>
-    public static void EmitSound( this CBaseEntity entity, string soundName, IReadOnlyDictionary<string, float>? parameters = null )
+    public static void EmitSound(this CBaseEntity entity, string soundName, IReadOnlyDictionary<string, float>? parameters = null)
     {
-        if ( !entity.IsValid )
+        if (!entity.IsValid)
         {
-            throw new ArgumentException( "Entity is not valid." );
+            throw new ArgumentException("Entity is not valid.");
         }
 
         try
@@ -53,7 +48,7 @@ public static class EmitSoundExtension
             CurrentParameters = parameters;
 
             // Pitch, volume etc aren't actually used here
-            CBaseEntity_EmitSoundParamsFunc.Invoke( entity, soundName, 100, 1f, 0f );
+            CBaseEntity_EmitSoundParamsFunc.Invoke(entity, soundName, 100, 1f, 0f);
         }
         finally
         {
@@ -75,7 +70,7 @@ public static class EmitSoundExtension
             name += $".p{pitch}";
         };
 
-            try
+        try
         {
             CBaseEntity_EmitSoundParamsFunc.Invoke(entity, name, 100, 1f, 0f);
         }
