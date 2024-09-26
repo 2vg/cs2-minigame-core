@@ -4,19 +4,23 @@ using CounterStrikeSharp.API.Modules.Cvars;
 using CounterStrikeSharp.API.Modules.Cvars.Validators;
 using Microsoft.Extensions.Logging;
 
-namespace CS2MinigameCore {
-    public class PluginSettings {
+namespace CS2MinigameCore
+{
+    public class PluginSettings
+    {
 
         private static PluginSettings? settingsInstance;
 
         public const string CONFIG_FOLDER = "csgo/cfg/cs2minigame/";
         private const string CONFIG_FILE = "mgcore.cfg";
 
-        public static PluginSettings getInstance {
-            get {
-                if(settingsInstance == null)
+        public static PluginSettings getInstance
+        {
+            get
+            {
+                if (settingsInstance == null)
                     throw new InvalidOperationException("Settings instance is not initialized yet.");
-                
+
                 return settingsInstance;
             }
         }
@@ -24,7 +28,7 @@ namespace CS2MinigameCore {
         /*
         *   Team based body color
         */
-        public readonly FakeConVar<string> m_CVTeamColorCT  = new("mg_teamcolor_ct", "Counter Terrorist's Body color. R, G, B", "0, 0, 255");
+        public readonly FakeConVar<string> m_CVTeamColorCT = new("mg_teamcolor_ct", "Counter Terrorist's Body color. R, G, B", "0, 0, 255");
         public readonly FakeConVar<string> m_CVTeamColorT = new("mg_teamcolor_t", "Terrorist's Body color. R, G, B", "255, 0, 0");
 
         /*
@@ -75,13 +79,13 @@ namespace CS2MinigameCore {
         *   Map config
         */
         public readonly FakeConVar<int> m_CVMapConfigExecutionTiming = new("mg_mapcfg_execution_timing", "When configs are executed? 0: Does nothing, 1: Execute on map start, 2: Execute on every round start, 3: Execute on map transition and every round start", 1, ConVarFlags.FCVAR_NONE, new RangeValidator<int>(0, 3));
-        public readonly FakeConVar<int> m_CVMapConfigType = new ("mg_mapcfg_type", "Map configuration type. 0: disabled, 1: Exact match, 2: Partial Match", 1, ConVarFlags.FCVAR_NONE, new RangeValidator<int>(0, 2));
+        public readonly FakeConVar<int> m_CVMapConfigType = new("mg_mapcfg_type", "Map configuration type. 0: disabled, 1: Exact match, 2: Partial Match", 1, ConVarFlags.FCVAR_NONE, new RangeValidator<int>(0, 2));
 
         /*
         *   Plugin debugging
         */
 
-        public readonly FakeConVar<int> m_CVPluginDebugLevel = new("mg_debug_level", "0: Nothing, 1: Print debug message, 2: Print debug, trace message", 0, ConVarFlags.FCVAR_NONE, new RangeValidator<int>(0,2));
+        public readonly FakeConVar<int> m_CVPluginDebugLevel = new("mg_debug_level", "0: Nothing, 1: Print debug message, 2: Print debug, trace message", 0, ConVarFlags.FCVAR_NONE, new RangeValidator<int>(0, 2));
         public readonly FakeConVar<bool> m_CVPluginDebugShowClientConsole = new("mg_debug_show_console", "Debug message shown in client console?", false);
 
         /*
@@ -154,6 +158,11 @@ namespace CS2MinigameCore {
         /*
         *   For debugging purpose
         */
+        public readonly FakeConVar<bool> m_CVAllEntityOutputHook = new("mg_all_entity_output_hook_enabled", "Enable EntityOutputHook for All entities.", true);
+
+        /*
+        *   For debugging purpose
+        */
         public readonly FakeConVar<bool> m_CVDebuggingEnabled = new("mg_debug_enabled", "Enable debugging feature?", false);
 
         /*
@@ -163,7 +172,8 @@ namespace CS2MinigameCore {
 
         private CS2MinigameCore m_CSSPlugin;
 
-        public PluginSettings(CS2MinigameCore plugin) {
+        public PluginSettings(CS2MinigameCore plugin)
+        {
             plugin.Logger.LogDebug("Setting the instance info");
             settingsInstance = this;
             plugin.Logger.LogDebug("Setting the plugin instance");
@@ -174,17 +184,20 @@ namespace CS2MinigameCore {
             m_CSSPlugin.RegisterFakeConVars(typeof(PluginSettings), this);
         }
 
-        public bool initializeSettings() {
+        public bool initializeSettings()
+        {
             m_CSSPlugin.Logger.LogDebug("Generate path to config folder");
             string configFolder = Path.Combine(Server.GameDirectory, CONFIG_FOLDER);
 
             m_CSSPlugin.Logger.LogDebug("Checking existence of config folder");
-            if(!Directory.Exists(configFolder)) {
+            if (!Directory.Exists(configFolder))
+            {
                 m_CSSPlugin.Logger.LogInformation($"Failed to find the config folder. Trying to generate...");
 
                 Directory.CreateDirectory(configFolder);
 
-                if(!Directory.Exists(configFolder)) {
+                if (!Directory.Exists(configFolder))
+                {
                     m_CSSPlugin.Logger.LogError($"Failed to generate the Config folder!");
                     return false;
                 }
@@ -194,16 +207,20 @@ namespace CS2MinigameCore {
             string configLocation = Path.Combine(configFolder, CONFIG_FILE);
 
             m_CSSPlugin.Logger.LogDebug("Checking existence of config file");
-            if(!File.Exists(configLocation)) {
+            if (!File.Exists(configLocation))
+            {
                 m_CSSPlugin.Logger.LogInformation($"Failed to find the config file. Trying to generate...");
 
-                try {
+                try
+                {
                     generateCFG(configLocation);
-                } catch(Exception e) {
+                }
+                catch (Exception e)
+                {
                     m_CSSPlugin.Logger.LogError($"Failed to generate config file!\n{e.StackTrace}");
                     return false;
                 }
-                
+
                 m_CSSPlugin.Logger.LogInformation($"Config file created.");
             }
 
@@ -212,7 +229,8 @@ namespace CS2MinigameCore {
             return true;
         }
 
-        private void generateCFG(string configPath) {
+        private void generateCFG(string configPath)
+        {
             StreamWriter config = File.CreateText(configPath);
 
             /*
@@ -348,7 +366,7 @@ namespace CS2MinigameCore {
 
             /*
             *   Omikuji - GiveRandomItem
-            */ 
+            */
             writeConVarConfig(config, m_CVOmikujiEventGiveRandomItemAvoidCount);
             writeConVarConfig(config, m_CVOmikujiEventGiveRandomItemSelectionWeight);
             config.WriteLine("\n");
@@ -374,6 +392,12 @@ namespace CS2MinigameCore {
             /*
             *   For debugging purpose
             */
+            writeConVarConfig(config, m_CVAllEntityOutputHook);
+            config.WriteLine("\n");
+
+            /*
+            *   For debugging purpose
+            */
             writeConVarConfig(config, m_CVDebuggingEnabled);
             config.WriteLine("\n");
 
@@ -386,13 +410,17 @@ namespace CS2MinigameCore {
             config.Close();
         }
 
-        private static void writeConVarConfig<T>(StreamWriter configFile, FakeConVar<T> convar)where T : IComparable<T>{
+        private static void writeConVarConfig<T>(StreamWriter configFile, FakeConVar<T> convar) where T : IComparable<T>
+        {
             configFile.WriteLine($"// {convar.Description}");
-            if(typeof(T) == typeof(bool)) {
+            if (typeof(T) == typeof(bool))
+            {
                 var conValue = convar.Value;
                 bool value = Unsafe.As<T, bool>(ref conValue);
                 configFile.WriteLine($"{convar.Name} {Convert.ToInt32(value)}");
-            } else {
+            }
+            else
+            {
                 configFile.WriteLine($"{convar.Name} {convar.Value}");
             }
             configFile.WriteLine();
