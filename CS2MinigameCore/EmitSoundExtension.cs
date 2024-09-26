@@ -4,11 +4,12 @@ using CounterStrikeSharp.API.Modules.Memory.DynamicFunctions;
 namespace CS2MinigameCore;
 
 
-// Code from Metapyziks. Edit by faketuna.
+// Code from Metapyziks. Edit by faketuna, uru.
 // https://gist.github.com/Metapyziks/88745748d90f8955e60b9831a7214cd2
 public static class EmitSoundExtension
 {
     // Search string with "DeathCry" and the function using this argument is EmitSoundParams.
+    // this is linux sig
     private static MemoryFunctionVoid<CBaseEntity, string, int, float, float> CBaseEntity_EmitSoundParamsFunc = new("48 B8 ? ? ? ? ? ? ? ? 55 48 89 E5 41 55 41 54 49 89 FC 53 48 89 F3");
     private static MemoryFunctionWithReturn<nint, nint, uint, uint, short, ulong, ulong> CSoundOpGameSystem_StartSoundEventFunc = new("40 57 41 54 41 55 41 56 41 57 48 81");
     private static MemoryFunctionVoid<nint, nint, ulong, nint, nint, short, byte> CSoundOpGameSystem_SetSoundEventParamFunc = new("48 89 5C 24 08 48 89 6C 24 10 56 57 41 56 48 83 EC 40 41");
